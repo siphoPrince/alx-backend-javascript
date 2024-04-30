@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function countStudents(path) {
+function countStudents (path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
       if (err) {
@@ -9,21 +9,23 @@ function countStudents(path) {
         const lines = data.split('\n').filter(line => line.trim() !== '');
         let studentsCount = 0;
         const fields = {};
+
         for (const line of lines) {
           const student = line.split(',');
-          const field = student[3];
-          if (!(field in fields)) {
-            fields[field] = [];
-          }
-          if (field !== '' && !isNaN(parseInt(student[0]))) {
+          const field = student[3].trim();
+
+          if (field) {
             studentsCount++;
-            fields[field].push(student[0]);
+            fields[field] = fields[field] || [];
+            fields[field].push(student[0].trim());
           }
         }
+
         console.log(`Number of students: ${studentsCount}`);
-        for (const field in fields) {
+        for (const field of Object.keys(fields)) {
           console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
         }
+
         resolve();
       }
     });
