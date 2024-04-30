@@ -1,40 +1,44 @@
 const fs = require('fs');
 
-function countStudents(path) {
-    try {
-        // Read the database file synchronously
-        const data = fs.readFileSync(path, 'utf8');
-        const lines = data.split('\n').filter(line => line.trim() !== ''); // Filter out empty lines
+function countStudents(database) {
+  let students = [];
+  const StudentGroup = {};
+  const studentObj = [];
 
-        let studentsCount = 0;
-        const fields = {};
+  try {
+    students = fs.readFileSync(database, 'utf8');
+  } catch (error) {
+    throw new Error('Cannot load the database');
+  }
 
-        // Loop through each line and count students in each field
-        for (const line of lines) {
-            const student = line.split(',');
-            const field = student[3];
+  students = students.split('\n');
+  const header = students.shift().split(',');
 
-            if (!(field in fields)) {
-                fields[field] = [];
-            }
+  students.forEach((element) => {
+    if (element) {
+      const studentInfo = element.split(',');
 
-            // Check if the student's field is not empty
-            if (field !== '' && !isNaN(parseInt(student[0]))) {
-                studentsCount++;
-                fields[field].push(student[0]);
-            }
+      header.forEach((header, index) => {
+        studentObj[header] = studentInfo[index];
+        if (header === 'field') {
+          if (StudentGroup[studentInfo[index]]) {
+            StudentGroup[studentInfo[index]].push(studentObj.firstname);
+          } else {
+            StudentGroup[studentInfo[index]] = [studentObj.firstname];
+          }
         }
-
-        // Log the total number of students
-        console.log(`Number of students: ${studentsCount}`);
-
-        // Log the number of students in each field
-        for (const field in fields) {
-            console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
-        }
-    } catch (error) {
-        throw new Error('Cannot load the database');
+      });
+      studentObj.push(studentObj);
     }
+  });
+  console.log(`Number of students: ${studentObj.length}`);
+
+  for (const info in StudentGroup) {
+    if (StudentGroup[info]) {
+      const listStudents = StudentGroup[info];
+      console.log(`Number of students in ${info}: ${listStudents.length}. List: ${listStudents.join(', ')}`);
+    }
+  }
 }
 
 module.exports = countStudents;
