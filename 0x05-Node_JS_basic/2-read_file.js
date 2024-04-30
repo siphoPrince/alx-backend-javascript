@@ -1,20 +1,20 @@
 const fs = require('fs');
 
-function countStudents(database) {
-  let students = [];
+function studentsCount(database) {
+  let student = [];
   const StudentGroup = {};
   const studentObj = [];
 
   try {
-    students = fs.readFileSync(database, 'utf8');
+    student = fs.readFileSync(database, 'utf8');
   } catch (error) {
     throw new Error('Cannot load the database');
   }
 
-  students = students.split('\n');
-  const header = students.shift().split(',');
+  student = student.split('\n');
+  const header = student.shift().split(',');
 
-  students.forEach((element) => {
+  student.forEach((element) => {
     if (element) {
       const studentInfo = element.split(',');
 
@@ -41,4 +41,4 @@ function countStudents(database) {
   }
 }
 
-module.exports = countStudents;
+module.exports = studentsCount;
