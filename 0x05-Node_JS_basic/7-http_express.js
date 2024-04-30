@@ -2,6 +2,7 @@ const express = require('express');
 const countStudents = require('./3-read_file_async');
 
 const app = express();
+const port = 1245;
 
 app.get('/', (req, res) => {
   res.type('text').send('Hello Holberton School!');
@@ -17,9 +18,5 @@ app.get('/students', (req, res) => {
     });
 });
 
-const port = 1245;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
+app.listen(port);
 module.exports = app;
