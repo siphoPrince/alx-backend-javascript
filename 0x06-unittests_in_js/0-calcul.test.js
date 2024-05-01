@@ -12,4 +12,3 @@ describe('calculateNumber', () => {
     assert.equal(calculateNumber(1, 3.7), 5);
   });
 });
-
