@@ -1,12 +1,10 @@
-const getPaymentTokenFromAPI = (success) => {
+function getPaymentTokenFromAPI(success) {
   return new Promise((resolve, reject) => {
     if (success) {
       resolve({ data: 'Successful response from the API' });
     } else {
-      // If not successful, do nothing
-      resolve();
+      // Simulate an error for testing
+      reject(new Error('API call failed'));
     }
   });
-};
-
-module.exports = getPaymentTokenFromAPI;
+}
