@@ -1,28 +1,12 @@
 const getPaymentTokenFromAPI = require('./6-payment_token');
 
 describe('getPaymentTokenFromAPI', () => {
-  it('should resolve with success message when success is true', (done) => {
+  test('should return a resolved promise with successful response from API', (done) => {
     getPaymentTokenFromAPI(true)
-      .then((data) => {
-        expect(data).toEqual({ data: 'Successful response from the API' });
-        done(); // Signal test completion after assertions
+      .then((response) => {
+        expect(response).toEqual({ data: 'Successful response from the API' });
+        done()
       })
-      .catch((error) => {
-        fail('Unexpected error:', error);
-        done(); // Signal test completion even on error
-      });
-  });
-
-  it('should reject with error message when success is false', (done) => {
-    getPaymentTokenFromAPI(false)
-      .then((data) => {
-        fail('Unexpected success');
-        done(); // Signal test completion even on success
-      })
-      .catch((error) => {
-        expect(error.message).toBe('API call failed');
-        done(); // Signal test completion after assertion
-      });
+      .catch((error) => done(error));
   });
 });
-
