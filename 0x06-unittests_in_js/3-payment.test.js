@@ -2,6 +2,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 
 const { expect } = chai;
+const { Utils } = require('./utils'); // Import the Utils module
 const { sendPaymentRequestToApi } = require('./3-payment');
 
 describe('sendPaymentRequestToApi', () => {
@@ -11,6 +12,6 @@ describe('sendPaymentRequestToApi', () => {
 
     expect(calculateNumberSpy.calledOnceWith('SUM', 100, 20)).to.be.true;
 
-    calculateNumberSpy.restore(); // Restore the spy after the test
+    calculateNumberSpy.restore();
   });
 });
