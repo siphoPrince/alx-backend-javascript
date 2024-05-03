@@ -1,35 +1,45 @@
-const fs = require('fs');
+const fs = require('fs').promises; // Use promises for asynchronous file access
 
-function countStudents (path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, data) => {
-      if (err) {
-        reject(new Error('Cannot load the database'));
-      } else {
-        const lines = data.split('\n').filter(line => line.trim() !== '');
-        let studentsCount = 0;
-        const fields = {};
+async function countStudents(filePath) {
+  try {
+    const data = await fs.readFile(filePath, 'utf8');
+    const lines = data.split('\n');
 
-        for (const line of lines) {
-          const student = line.split(',');
-          const field = student[3].trim();
+    // Filter out empty lines
+    const validLines = lines.filter((line) => line.trim() !== '');
 
-          if (field) {
-            studentsCount++;
-            fields[field] = fields[field] || [];
-            fields[field].push(student[0].trim());
-          }
-        }
+    const studentData = validLines.map((line) => line.split(','));
 
-        console.log(`Number of students: ${studentsCount}`);
-        for (const field of Object.keys(fields)) {
-          console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
-        }
+    const studentCounts = {
+      total: studentData.length,
+      CS: 0,
+      SWE: 0,
+    };
 
-        resolve();
+    studentData.forEach((student) => {
+      const field = student[student.length - 1].trim();
+      if (field === 'CS') {
+        studentCounts.CS++;
+      } else if (field === 'SWE') {
+        studentCounts.SWE++;
       }
     });
-  });
+
+    console.log(`Number of students: ${studentCounts.total}`);
+    console.log(`Number of students in CS: ${studentCounts.CS}. List: ${studentData
+      .filter((student) => student[student.length - 1].trim() === 'CS')
+      .map((student) => student[0])
+      .join(', ')}`);
+    console.log(`Number of students in SWE: ${studentCounts.SWE}. List: ${studentData
+      .filter((student) => student[student.length - 1].trim() === 'SWE')
+      .map((student) => student[0])
+      .join(', ')}`);
+
+    return Promise.resolve(); // Resolve the promise if successful
+  } catch (error) {
+    return Promise.reject(new Error('Cannot load the database')); // Reject the promise with an error
+  }
 }
 
 module.exports = countStudents;
+
